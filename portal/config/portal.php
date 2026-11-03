@@ -2,6 +2,7 @@
 
 return [
     'department' => 'Department of Physics',
+    'timezone' => 'Africa/Lagos', // the calendar's "today"
     'faculty' => 'Faculty of Physical Sciences',
     'university' => 'Federal University of Lafia',
     'address' => 'PMB 146, Makurdi Road, Gandu, Lafia, Nasarawa State, Nigeria',

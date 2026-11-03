@@ -24,6 +24,7 @@
             @if($me->isPrincipalAdmin() || $me->role === 'secondary_admin')
                 <a href="{{ route('admin.accounts.index') }}">Staff accounts</a>
                 <a href="{{ route('admin.sessions') }}">Sessions</a>
+                <a href="{{ route('admin.calendar') }}">Calendar</a>
                 <a href="{{ route('admin.graduation.index') }}">Graduation</a>
                 <a href="{{ route('admin.graduates.index') }}">Graduates</a>
                 <a href="{{ route('admin.corrections.index') }}">Corrections</a>

@@ -11,3 +11,8 @@
 /portal/storage/app/imports/
 *.sqlite
 *.sqlite-journal
+
+# Office lock files and the department files kept beside the project
+~$*
+/*.xlsx
+/*.docx

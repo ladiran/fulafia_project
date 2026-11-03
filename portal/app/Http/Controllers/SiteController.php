@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\ContactMessage;
 use App\Models\Course;
 use App\Models\Download;
+use App\Models\AcademicSession;
+use App\Models\CalendarEvent;
 use App\Models\Event;
 use App\Models\GalleryItem;
 use App\Models\MediaFile;
@@ -56,6 +58,17 @@ class SiteController extends Controller
         return view('public.events', [
             'upcoming' => Event::where('is_published', true)->where('starts_at', '>=', now()->startOfDay())->orderBy('starts_at')->get(),
             'past' => Event::where('is_published', true)->where('starts_at', '<', now()->startOfDay())->orderByDesc('starts_at')->limit(10)->get(),
+        ]);
+    }
+
+    /** The academic calendar of the current session, without the portal-control details. */
+    public function calendar()
+    {
+        $session = AcademicSession::current();
+
+        return view('public.calendar', [
+            'session' => $session,
+            'events' => $session ? CalendarEvent::where('academic_session_id', $session->id)->orderBy('starts_on')->orderBy('id')->get() : collect(),
         ]);
     }
 

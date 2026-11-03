@@ -8,11 +8,13 @@ use App\Models\Course;
 use App\Models\CourseOffering;
 use App\Models\Result;
 use App\Models\User;
+use App\Services\CalendarService;
 use App\Services\CourseSheetService;
 use App\Services\PdfService;
 use App\Services\ResultService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 /**
  * Result sheets. Lecturers work on the courses assigned to them; the EO / HoD (and appointed admins
@@ -20,7 +22,7 @@ use Illuminate\Http\Request;
  */
 class ResultController extends Controller
 {
-    public function __construct(private ResultService $results) {}
+    public function __construct(private ResultService $results, private CalendarService $calendar) {}
 
     public function index()
     {
@@ -83,7 +85,8 @@ class ResultController extends Controller
             'offering' => $offering,
             'registrations' => $registrations,
             'scores' => $scores,
-            'canEdit' => $offering->isDraft(),
+            'closedReason' => $this->closedReason($offering),
+            'canEdit' => $offering->isDraft() && ! $this->closedReason($offering),
             'manager' => auth()->user()->hasPermission('manage_results'),
             'isHod' => auth()->user()->isPrincipalAdmin(),
         ]);
@@ -105,6 +108,7 @@ class ResultController extends Controller
     public function save(Request $request, CourseOffering $offering): RedirectResponse
     {
         $this->authorizeSheet($offering);
+        $this->requireWindow($offering);
         $request->validate(['scores' => ['nullable', 'array']]);
 
         $saved = $this->results->saveScores($offering, $request->input('scores', []));
@@ -115,6 +119,7 @@ class ResultController extends Controller
     public function upload(Request $request, CourseOffering $offering): RedirectResponse
     {
         $this->authorizeSheet($offering);
+        $this->requireWindow($offering);
         $request->validate(['file' => ['required', 'file', 'mimes:csv,txt', 'max:1024']]);
 
         [$applied, $problems] = $this->results->importCsv($offering, $request->file('file')->getRealPath());
@@ -128,6 +133,7 @@ class ResultController extends Controller
     public function submit(CourseOffering $offering): RedirectResponse
     {
         $this->authorizeSheet($offering);
+        $this->requireWindow($offering);
         $this->results->submit($offering);
 
         return back()->with('status', 'Submitted for vetting. The sheet is now locked.');
@@ -179,6 +185,19 @@ class ResultController extends Controller
     {
         $user = auth()->user();
         abort_unless($user->hasPermission('manage_results') || $offering->lecturer_id === $user->id, 403);
+    }
+
+    /** Lecturers work on their sheets only while the calendar's result-upload window is open; the EO and HoD are not held to it. */
+    private function closedReason(CourseOffering $offering): ?string
+    {
+        return auth()->user()->hasPermission('manage_results') ? null : $this->calendar->resultsBlocked($offering);
+    }
+
+    private function requireWindow(CourseOffering $offering): void
+    {
+        if ($reason = $this->closedReason($offering)) {
+            throw ValidationException::withMessages(['scores' => $reason]);
+        }
     }
 
     private function requireManager(): void

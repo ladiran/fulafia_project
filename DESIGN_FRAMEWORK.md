@@ -262,6 +262,7 @@ ADMITTED → ACTIVE(100) → ACTIVE(200) → ACTIVE(300) → ACTIVE(400) → GRA
 - Entry level depends on admission mode (Section 8.4): Regular 100L, Direct Entry 200L, Transfer 100L or 200L.
 - `DEFERRED` is entered only by HoD action (Section 8.6).
 - **Progression is automatic** (department decision, v1.8). A session has two semesters. When the next session starts, every active student moves up a level with no approval step, carrying failed courses along. Each student's registration is capped at **24 units a semester**, failed courses first. At 400 level a student who has not graduated may stay **two more sessions**, then is marked withdrawn, unless the Senate grants an extension that the HoD records. Movements are recorded in `student_level_history`.
+- **The academic calendar drives the portal** (v1.9). The official calendar is held per session. Dates marked as controlling decide when course registration is open, when lecturers can enter and submit results, and when the second semester begins. The HoD alone changes the calendar and can force any window open or closed (every change is audited). The EO and HoD can still work on result sheets outside the window. Faculty-wide activities of other faculties are kept on the calendar for information only.
 - Carry-over courses are tracked and must be passed before graduation.
 
 ### 8.2 Graduation rule
@@ -436,6 +437,7 @@ Open questions (answers shape the build):
 Change log:
 - v0.1: Initial framework from owner's first brief.
 - v1.8: The manual promotion step was removed. Students move up automatically when the next session starts; 24-unit semester cap with failed courses first; residency limit at 400 level (two extra sessions) with HoD-recorded Senate extensions.
+- v1.9: Academic calendar added (loaded from the official 2026/2027 calendar). It controls registration, result upload by lecturers and the semester switch; HoD-controlled, with reminders before a window closes.
 - v1.7: Graduate record corrections (EO/HoD request, HoD approves, original kept, CGPA/class recalculated). Department confirmed: probation below 1.00 at session end and withdrawal if still below at the next session end; TAKE = compulsory course not taken; faculty is "Faculty of Physical Sciences"; the Dean's signature space stays on the broadsheet.
 - v1.6: Result output formats from the department's templates (`Result_Templates/`): course "Examination result" sheet PDF and the Senate-format level broadsheet PDF (100 to 400 level), with CA 1 + CA 2 scoring. Assumptions to confirm: probation/withdrawal rule, "TAKE" meaning, faculty name in the heading.
 - v1.5: Bulk student import from CSV (check first, confirm, skip bad rows, one-time temporary-password download). Past results are not imported.

@@ -15,6 +15,7 @@
 </p>
 
 @error('scores')<div class="alert bad">{{ $message }}</div>@enderror
+@if($closedReason)<div class="alert warn"><strong>The sheet is locked by the academic calendar.</strong> {{ $closedReason }}</div>@endif
 @if($offering->return_note)<div class="alert warn"><strong>Note:</strong> {{ $offering->return_note }}</div>@endif
 @if(session('problems'))<div class="alert warn"><strong>Some rows were skipped:</strong><ul>@foreach(session('problems') as $p)<li>{{ $p }}</li>@endforeach</ul></div>@endif
 

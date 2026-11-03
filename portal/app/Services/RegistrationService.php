@@ -23,11 +23,11 @@ class RegistrationService
                 => 'Your transfer credit evaluation has not been approved yet. You can register once the department has approved it.',
             $student->current_level === 400 && $student->specialization_id === null
                 => 'Choose your area of specialization before registering 400 level courses.',
-            default => null,
+            default => $this->calendar->registrationBlocked($session),
         };
     }
 
-    public function __construct(private StandingService $standing) {}
+    public function __construct(private StandingService $standing, private CalendarService $calendar) {}
 
     /**
      * Courses open to the student this semester. Each carries `carry_over` (failed earlier and not waived,

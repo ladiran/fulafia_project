@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\GraduateController;
 use App\Http\Controllers\Admin\GraduateCorrectionController;
 use App\Http\Controllers\Admin\GraduationController;
 use App\Http\Controllers\Admin\LevelAdviserController;
+use App\Http\Controllers\Admin\CalendarController;
 use App\Http\Controllers\Admin\SessionController;
 use App\Http\Controllers\Admin\StaffAccountController;
 use App\Http\Controllers\Admin\StudentImportController;
@@ -44,6 +45,7 @@ Route::get('/p/{slug}', [SiteController::class, 'page'])->name('page');
 Route::get('/news', [SiteController::class, 'news'])->name('news');
 Route::get('/news/{slug}', [SiteController::class, 'post'])->name('post');
 Route::get('/events', [SiteController::class, 'events'])->name('events');
+Route::get('/academic-calendar', [SiteController::class, 'calendar'])->name('calendar');
 Route::get('/staff-directory', [SiteController::class, 'staff'])->name('staff.directory');
 Route::get('/staff-directory/{member}', [SiteController::class, 'staffMember'])->name('staff.member');
 Route::get('/courses', [SiteController::class, 'courses'])->name('courses');
@@ -197,6 +199,15 @@ Route::middleware(['auth', 'secure.account'])->group(function () {
             Route::post('/sessions', [SessionController::class, 'store'])->name('sessions.store');
             Route::post('/sessions/start-next', [SessionController::class, 'startNext'])->name('sessions.start-next');
             Route::post('/sessions/{session}', [SessionController::class, 'update'])->name('sessions.update');
+
+            // The academic calendar: both can read it, only the HoD changes it (checked in the controller).
+            Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar');
+            Route::post('/calendar/{session}/load-official', [CalendarController::class, 'loadOfficial'])->name('calendar.load');
+            Route::post('/calendar/{session}/copy', [CalendarController::class, 'copy'])->name('calendar.copy');
+            Route::post('/calendar/{session}/events', [CalendarController::class, 'store'])->name('calendar.store');
+            Route::put('/calendar/events/{event}', [CalendarController::class, 'update'])->name('calendar.update');
+            Route::post('/calendar/events/{event}/override', [CalendarController::class, 'override'])->name('calendar.override');
+            Route::delete('/calendar/events/{event}', [CalendarController::class, 'destroy'])->name('calendar.destroy');
         });
 
         // Graduation, corrections, deferments, transfers, staff accounts and more: HoD and EO (approvals are HoD-only inside the controllers).

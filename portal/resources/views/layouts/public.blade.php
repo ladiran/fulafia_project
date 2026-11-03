@@ -28,6 +28,7 @@
             <a href="{{ route('staff.directory') }}">Staff</a>
             <a href="{{ route('news') }}">News</a>
             <a href="{{ route('events') }}">Events</a>
+            <a href="{{ route('calendar') }}">Calendar</a>
             @foreach($menuPages as $p)<a href="{{ route('page', $p->slug) }}">{{ $p->title }}</a>@endforeach
             <a href="{{ route('courses') }}">Courses</a>
             <a href="{{ route('gallery') }}">Gallery</a>
