@@ -1,0 +1,13 @@
+﻿# Local tooling and working files
+/.claude/
+/Result_Templates/
+
+# Uploaded and generated data must never be committed
+/portal/storage/app/private/*
+!/portal/storage/app/private/.gitignore
+/portal/storage/app/public/*
+!/portal/storage/app/public/.gitignore
+/portal/storage/app/dompdf/
+/portal/storage/app/imports/
+*.sqlite
+*.sqlite-journal
